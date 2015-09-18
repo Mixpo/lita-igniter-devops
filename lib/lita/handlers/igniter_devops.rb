@@ -7,7 +7,10 @@ module Lita
     class IgniterDevops < Handler
       Lita.register_handler(self)
 
+      # path to your igniter5-devops repo locally
       config :devops_path, type: String, required: true
+      # Optional ENV variables. Overwrites anything in igniter5-devops' parameters.yml. See that file for available parameters.
+      config :env_vars, type: Hash, required: true
 
       ## DEVOPS ##########################################
 
@@ -38,6 +41,13 @@ module Lita
           'Oh. Your. God.',
           'Game\'s over, losers! I have all the money. Compare your lives to mine and then kill yourselves.',
           'But I don\'t like things that are scary and painful.',
+          'There. This\'ll teach those filthy bastards who\'s lovable.',
+          'I support and oppose many things, but not strongly enough to pick up a pen.',
+          'Rrrrr... it\'s so cold, my processor is running at peak efficiency!',
+          'I don\'t tell you how to tell me what to do, so don\'t tell me how to do what you tell me to do.',
+          'Uh, me no speak-a the English.',
+          'Sounds boring.',
+          '... zero-one-zero-one-one-zero-zero-one... two. Amen.',
         ]
         response.reply quotes.sample
 
@@ -51,6 +61,7 @@ module Lita
           `#{data_container}`
         end
 
+        # Docker run skeleton command
         cmd = [
           'docker',
           'run',
@@ -59,12 +70,21 @@ module Lita
           '-v /var/run/docker.sock:/var/run/docker.sock',
           "-v #{config.devops_path}:/igniter5-devops",
           '--entrypoint=/igniter5-devops/devops',
-          'shopigniter/buildbot:latest',
-        ] + opts
+        ]
+        # Add devops params
+        config.env_vars.each do |key, value|
+          cmd.push "-e #{key.upcase}=#{value}"
+        end
+        # Add image name
+        cmd.push 'shopigniter/buildbot:latest'
+        # Add command options to run
+        cmd += opts
+
+        log.debug "Command to be executed: #{cmd.join(' ')}"
 
         out = ''
         Open3.popen3(cmd.join(' ')) do |i, o, e, wait_thread|
-          o.each { |line| out << "[out] #{line}" }
+          o.each { |line| out << "#{line}" }
           e.each { |line| out << "[err] #{line}" }
         end
 
@@ -76,9 +96,8 @@ module Lita
         }
         ascii_out = out.encode(Encoding.find('ASCII'), encoding_options)
 
-        response.reply '/quote'
         ascii_out.split("\n").each_slice(50) do |slice|
-          response.reply slice.join("\n")
+          response.reply "/quote\n" + slice.join("\n")
         end
       end
 

@@ -3,10 +3,10 @@ Gem::Specification.new do |spec|
   spec.version       = "0.1.0"
   spec.authors       = ["Jared Markell"]
   spec.email         = ["jaredm4@gmail.com"]
-  spec.description   = "TODO: Add a description"
-  spec.summary       = "TODO: Add a summary"
-  spec.homepage      = "TODO: Add a homepage"
-  spec.license       = "TODO: Add a license"
+  spec.description   = "Issue devops commands from your HipChats as if it was the devops script actually. Mediocrity at its best."
+  spec.summary       = "Devops wrapper for Lita and HipChat"
+  spec.homepage      = "https://github.com/Mixpo/lita-igniter-devops"
+  spec.license       = "MIT"
   spec.metadata      = { "lita_plugin_type" => "handler" }
 
   spec.files         = `git ls-files`.split($/)
