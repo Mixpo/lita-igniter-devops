@@ -73,7 +73,7 @@ module Lita
         ]
         # Add devops params
         config.env_vars.each do |key, value|
-          cmd.push "-e #{key.upcase}=#{value}"
+          cmd.push "-e \"#{key.upcase}=#{value}\""
         end
         # Add image name
         cmd.push 'shopigniter/buildbot:latest'
