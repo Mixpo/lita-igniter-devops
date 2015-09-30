@@ -88,6 +88,8 @@ module Lita
           e.each { |line| out << "[err] #{line}" }
         end
 
+        response.reply "Yay I'm done! This calls for a drink. (beer)"
+
         # Scrub Unicode to ASCII
         encoding_options = {
           :invalid           => :replace,  # Replace invalid byte sequences
