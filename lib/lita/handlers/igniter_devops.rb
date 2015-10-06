@@ -83,12 +83,18 @@ module Lita
         log.debug "Command to be executed: #{cmd.join(' ')}"
 
         out = ''
+        success = false
         Open3.popen3(cmd.join(' ')) do |i, o, e, wait_thread|
           o.each { |line| out << "#{line}" }
           e.each { |line| out << "[err] #{line}" }
+          success = wait_thread.value.success?
         end
 
-        response.reply "Yay I'm done! This calls for a drink. (beer)"
+        if success
+          response.reply "Yay I'm done! This calls for a drink. (beer)"
+        else
+          response.reply 'Ah damn, it failed. I tried. (areyoukiddingme)'
+        end
 
         # Scrub Unicode to ASCII
         encoding_options = {
@@ -98,7 +104,7 @@ module Lita
         }
         ascii_out = out.encode(Encoding.find('ASCII'), encoding_options)
 
-        ascii_out.split("\n").each_slice(50) do |slice|
+        ascii_out.split("\n").each_slice(40) do |slice|
           response.reply "/quote\n" + slice.join("\n")
         end
       end
