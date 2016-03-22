@@ -104,8 +104,8 @@ module Lita
         }
         ascii_out = out.encode(Encoding.find('ASCII'), encoding_options)
 
-        ascii_out.split("\n").each_slice(40) do |slice|
-          response.reply "/quote\n" + slice.join("\n")
+        ascii_out.split("\n").each_slice(60) do |slice|
+          response.reply "/code\n" + slice.join("\n")
         end
       end
 
